@@ -1,6 +1,6 @@
-# cert-manager
+# cert-admin
 
-`cert-manager` es un controlador de certificados minimalista escrito en Go que ayuda a administrar un almacén PKI local.
+`cert-admin` es un controlador de certificados minimalista escrito en Go que ayuda a administrar un almacén PKI local.
 
 ## ¿Qué hace?
 
@@ -42,8 +42,8 @@ go run ./cmd/main.go list
 ### Construir el binario
 
 ```bash
-go build -o cert-manager ./cmd
-./cert-manager list
+go build -o cert-admin ./cmd
+./cert-admin list
 ```
 
 ## Salida esperada
