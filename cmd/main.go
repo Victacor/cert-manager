@@ -29,7 +29,7 @@ func main() {
 
 	var cmdPrint = &cobra.Command{
 		Use:   "list [string to print]",
-		Short: "Ayuda para cobra",
+		Short: "Cobra help",
 		Args:  cobra.MaximumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			files, keys, err := obtainFiles()
@@ -38,7 +38,6 @@ func main() {
 			}
 			row_certs := getinfofiles(files, keys)
 			formatTable(row_certs)
-			//color_date("2026-05-8")
 		},
 	}
 	var rootCmd = &cobra.Command{Use: "app"}
@@ -61,11 +60,9 @@ func color_date(date_s string) string {
 	limit := int(diff / 24)
 
 	if limit <= 60 {
-		//fmt.Println(red + date_s + reset)
 		colored_string := (red + date_s + reset)
 		return colored_string
 	} else {
-		//fmt.Println(green + date_s + reset)
 		colored_string := (green + date_s + reset)
 		return colored_string
 	}
@@ -100,29 +97,29 @@ func getinfofiles(files_path []string, keys_path []string) [][]string {
 		cert_name := filepath.Base(v)
 		cert_data, cert_d_err := os.ReadFile(v)
 		if cert_d_err != nil {
-			fmt.Println("Valor nil al leer el cert")
+			fmt.Println("Failed to read certificate file")
 			os.Exit(1)
 		}
 		cert_decoded, _ := pem.Decode(cert_data)
 		if cert_decoded == nil {
-			fmt.Println("Error decodificando el cert")
+			fmt.Println("Failed to decode certificate")
 			os.Exit(1)
 		}
 		cert_human_readable, cert_p_err := x509.ParseCertificate(cert_decoded.Bytes)
 		if cert_p_err != nil {
-			fmt.Println("Error parseando el certificado")
+			fmt.Println("Failed to parse certificate")
 			os.Exit(1)
 		}
 		cert_date_expiration := cert_human_readable.NotAfter.Format("2006-01-02")
 		if cert_data == nil {
-			fmt.Println("No se puede obtener la fecha del crt")
+			fmt.Println("Unable to obtain certificate date")
 			os.Exit(1)
 		}
 		cert_date_signature := cert_human_readable.NotBefore.Format("2006-01-02")
 		cert_pub := cert_human_readable.PublicKey.(*rsa.PublicKey)
 		cert_n := cert_pub.N
 		if cert_n == nil {
-			fmt.Println("No se puede obtener el modulus del crt")
+			fmt.Println("Unable to obtain certificate modulus")
 			os.Exit(1)
 		}
 		cert_n_str := fmt.Sprintf("%x", cert_n)
@@ -134,12 +131,12 @@ func getinfofiles(files_path []string, keys_path []string) [][]string {
 		key_name := filepath.Base(v)
 		key_data, key_d_err := os.ReadFile(v)
 		if key_d_err != nil {
-			fmt.Println("Valor empty al leer el key")
+			fmt.Println("Failed to read key file")
 			os.Exit(1)
 		}
 		key_decoded, _ := pem.Decode(key_data)
 		if key_decoded == nil {
-			fmt.Println("Error decodificando la key")
+			fmt.Println("Failed to decode key")
 			os.Exit(1)
 		}
 		key_human_readble, key_p_err := x509.ParsePKCS8PrivateKey(key_decoded.Bytes)
@@ -172,7 +169,7 @@ func getinfofiles(files_path []string, keys_path []string) [][]string {
 func formatTable(row_certs [][]string) {
 
 	data := [][]string{
-		{"Certificado", "Key", "Valided", "Firma"},
+		{"Certificate", "Key", "Validity Date", "Signature Date"},
 	}
 
 	data = append(data, row_certs...)
